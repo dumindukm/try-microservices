@@ -42,6 +42,7 @@ namespace ConferenceWeb
                     options.ResponseType = "code";
 
                     options.Scope.Add("profile");
+                    options.Scope.Add("api_gateway");
                     options.GetClaimsFromUserInfoEndpoint = true;
 
                     options.SaveTokens = true;

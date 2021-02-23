@@ -22,6 +22,7 @@ namespace IdentityServer
             {
                 new ApiScope("scope1"),
                 new ApiScope("scope2"),
+                new ApiScope("api_gateway")
             };
 
         public static IEnumerable<Client> Clients =>
@@ -70,7 +71,8 @@ namespace IdentityServer
                     AllowedScopes = new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "api_gateway"
                     }
                 }
             };
