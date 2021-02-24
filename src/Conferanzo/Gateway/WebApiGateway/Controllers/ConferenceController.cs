@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApiGateway.Models.Conference;
 
 namespace WebApiGateway.Controllers
 {
@@ -16,7 +17,8 @@ namespace WebApiGateway.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+            List<Conference> conferences = new List<Conference>();
+            return new JsonResult(conferences);
         }
     }
 }
