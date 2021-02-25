@@ -16,17 +16,18 @@ namespace ConferenceWeb.Controllers
     [Authorize]
     public class ConferenceController : Controller
     {
-        public ConferenceController()
+        private readonly IHttpClientFactory httpClientFactory;
+        public ConferenceController(IHttpClientFactory clientFactory)
         {
-
+            this.httpClientFactory = clientFactory;
         }
         public async Task<IActionResult> Index()
         {
             IEnumerable<ConferenceViewModel> model = new List<ConferenceViewModel>();
-            var apiClient = new HttpClient();
+            var apiClient = httpClientFactory.CreateClient("api_gateway");
             apiClient.SetBearerToken(await HttpContext.GetTokenAsync("access_token"));
 
-            var response = await apiClient.GetAsync("https://localhost:44387/api/conference");
+            var response = await apiClient.GetAsync("conference");
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine(response.StatusCode);
