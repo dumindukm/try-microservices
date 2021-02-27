@@ -1,4 +1,5 @@
 ﻿using ConferenceWeb.Models;
+using ConferenceWeb.Services;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -16,15 +17,15 @@ namespace ConferenceWeb.Controllers
     [Authorize]
     public class ConferenceController : Controller
     {
-        private readonly IHttpClientFactory httpClientFactory;
-        public ConferenceController(IHttpClientFactory clientFactory)
+        private readonly ApiGatewayService gatewayService;
+        public ConferenceController(ApiGatewayService service)
         {
-            this.httpClientFactory = clientFactory;
+            this.gatewayService = service;
         }
         public async Task<IActionResult> Index()
         {
             IEnumerable<ConferenceViewModel> model = new List<ConferenceViewModel>();
-            var apiClient = httpClientFactory.CreateClient("api_gateway");
+            var apiClient = gatewayService.GetHttpClient();
             apiClient.SetBearerToken(await HttpContext.GetTokenAsync("access_token"));
 
             var response = await apiClient.GetAsync("conference");

@@ -52,6 +52,9 @@ namespace WebApiGateway
                     policy.RequireClaim("scope", "api_gateway");
                 });
             });
+            services.AddHttpClient();
+            services.AddSingleton<ServiceMeta>();
+            services.Configure<ServiceMeta>(Configuration.GetSection("ServiceMetas"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

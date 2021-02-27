@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
+using ConferenceWeb.Services;
 
 namespace ConferenceWeb
 {
@@ -24,7 +25,10 @@ namespace ConferenceWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHttpClient("api_gateway", c => {
+            //services.AddHttpClient("api_gateway", c => {
+            //    c.BaseAddress = new Uri(Configuration.GetValue<string>("ApiGateway"));
+            //});
+            services.AddHttpClient< ApiGatewayService>( c => {
                 c.BaseAddress = new Uri(Configuration.GetValue<string>("ApiGateway"));
             });
             services.AddControllersWithViews();
