@@ -1,4 +1,5 @@
 ﻿using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -11,15 +12,16 @@ namespace ConferenceWeb.Services
     public class ApiGatewayService
     {
         private HttpClient httpClient;
-        public ApiGatewayService(HttpClient client)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ApiGatewayService(HttpClient client, IHttpContextAccessor httpContextAccessor)
         {
             httpClient = client;
-
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public HttpClient GetHttpClient()
+        public async Task<HttpClient> GetHttpClient()
         {
-            //httpClient.SetBearerToken(await HttpContext.GetTokenAsync("access_token"));
+            httpClient.SetBearerToken(await _httpContextAccessor.HttpContext.GetTokenAsync("access_token"));
             return httpClient;
         }
     }

@@ -25,8 +25,7 @@ namespace ConferenceWeb.Controllers
         public async Task<IActionResult> Index()
         {
             IEnumerable<ConferenceViewModel> model = new List<ConferenceViewModel>();
-            var apiClient = gatewayService.GetHttpClient();
-            apiClient.SetBearerToken(await HttpContext.GetTokenAsync("access_token"));
+            var apiClient = await gatewayService.GetHttpClient();
 
             var response = await apiClient.GetAsync("conference");
             if (!response.IsSuccessStatusCode)

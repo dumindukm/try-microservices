@@ -32,6 +32,7 @@ namespace ConferenceWeb
                 c.BaseAddress = new Uri(Configuration.GetValue<string>("ApiGateway"));
             });
             services.AddControllersWithViews();
+            services.AddHttpContextAccessor();
             JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
             services.AddAuthentication(options =>

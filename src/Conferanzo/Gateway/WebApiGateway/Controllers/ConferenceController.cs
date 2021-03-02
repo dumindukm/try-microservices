@@ -28,10 +28,11 @@ namespace WebApiGateway.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            List<Conference> conferences = new List<Conference>();
+
             var result = await httpclient.GetAsync(meta.Conference.Url+"conference");
+            var r = await result.Content.ReadAsStringAsync();
             var resultContent = await result.Content.ReadAsStreamAsync();
-            conferences = await JsonSerializer.DeserializeAsync<List<Conference>>(resultContent);
+            var conferences = await JsonSerializer.DeserializeAsync<List<Conference>>(resultContent);
 
             return new JsonResult(conferences);
         }

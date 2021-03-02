@@ -9,11 +9,17 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ConfernceFaas.Models;
 using System.Collections.Generic;
+using ConfernceFaas.Services;
+using Newtonsoft.Json.Serialization;
 
 namespace ConfernceFaas
 {
     public static class ConferenceFunction
     {
+        static ConferenceFunction()
+        {
+        }
+
         [FunctionName("Conference")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
@@ -32,9 +38,10 @@ namespace ConfernceFaas
                 : $"Hello, {name}. This HTTP triggered function executed successfully.";
 
             List<Conference> conference = new List<Conference>();
-            conference.Add(new Conference());
+            //conference.Add(new Conference());
+            conference = await ConferenceDbService.QueryConferencesAsync();
 
-            return new OkObjectResult(conference);
+            return new OkObjectResult(JsonConvert.SerializeObject(conference));
         }
     }
 }
