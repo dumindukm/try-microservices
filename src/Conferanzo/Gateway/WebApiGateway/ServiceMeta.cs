@@ -8,6 +8,7 @@ namespace WebApiGateway
     public class ServiceMeta
     {
         public Meta Conference { get; set; }
+        public Meta Reservation { get; set; }
     }
 
     public class Meta

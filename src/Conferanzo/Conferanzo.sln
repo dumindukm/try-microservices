@@ -21,6 +21,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Conference", "Conference", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfernceFaas", "MicroServices\Conference\ConfernceFaas\ConfernceFaas.csproj", "{123DBEE4-4BFF-4805-A03E-84695C56CA96}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reservation", "Reservation", "{5CC42421-7569-4A64-BF93-E7C705119091}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReservationFass", "MicroServices\Reservation\ReservationFass\ReservationFass.csproj", "{E02FC2FA-1111-4948-B179-4C285B90D8AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,10 @@ Global
 		{123DBEE4-4BFF-4805-A03E-84695C56CA96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{123DBEE4-4BFF-4805-A03E-84695C56CA96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{123DBEE4-4BFF-4805-A03E-84695C56CA96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E02FC2FA-1111-4948-B179-4C285B90D8AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E02FC2FA-1111-4948-B179-4C285B90D8AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E02FC2FA-1111-4948-B179-4C285B90D8AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E02FC2FA-1111-4948-B179-4C285B90D8AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +61,8 @@ Global
 		{740840AC-26B6-4FBD-97AE-EA3BECD8AEE3} = {68CCD5E8-79F9-4603-BC55-844373BF0D5F}
 		{291DA10E-B3D9-4F0C-AB03-F9D4126D6500} = {61E30616-8507-47B7-9447-750F7A443191}
 		{123DBEE4-4BFF-4805-A03E-84695C56CA96} = {291DA10E-B3D9-4F0C-AB03-F9D4126D6500}
+		{5CC42421-7569-4A64-BF93-E7C705119091} = {61E30616-8507-47B7-9447-750F7A443191}
+		{E02FC2FA-1111-4948-B179-4C285B90D8AE} = {5CC42421-7569-4A64-BF93-E7C705119091}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3C8D12C2-EE7F-474A-9658-ED3B9F183685}

@@ -11,5 +11,6 @@ namespace ConferenceWeb.Models
         public string DisplayName { get; set; }
         public int AvilableSeats { get; set; }
         public decimal TicketPrice { get; set; }
+
     }
 }

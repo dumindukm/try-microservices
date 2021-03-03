@@ -14,5 +14,7 @@ namespace ConfernceFaas.Models
         public string DisplayName { get; set; } = "Test conf";
         public int AvilableSeats { get; set; } = 100;
         public decimal TicketPrice { get; set; } = 500;
+        public int SoldSeats { get; set; }
+        public int SeatsInCart { get; set; }
     }
 }
