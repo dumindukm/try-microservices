@@ -5,10 +5,13 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.EventGrid;
 using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.WebJobs.ServiceBus;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using ReservationFass.Models;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ReservationFass
@@ -44,56 +47,47 @@ namespace ReservationFass
 
             }
 
-            // Replace "hello" with the name of your Durable Activity Function.
-            //outputs.Add(await context.CallActivityAsync<string>("Reservation_Command", "Tokyo"));
-            //outputs.Add(await context.CallActivityAsync<string>("Function1_Hello", "Seattle"));
-            //outputs.Add(await context.CallActivityAsync<string>("Function1_Hello", "London"));
-
-            // returns ["Hello Tokyo!", "Hello Seattle!", "Hello London!"]
 
         }
 
-        //
+        // Call by orchestrator. 
+        // Add event to AccountValidationEventProducerHub for account details validation
         [FunctionName(nameof(AccountValidationEventProducer))]
-        //[return: EventGrid(TopicEndpointUri = "MyEventGridTopicUriSetting", TopicKeySetting = "MyEventGridTopicKeySetting")]
         public static async Task<ProducerResult> AccountValidationEventProducer(
-            [EventGrid(TopicEndpointUri = "MyEventGridTopicUriSetting", TopicKeySetting = "MyEventGridTopicKeySetting")] IAsyncCollector<EventGridEvent> outputEvents, 
+            [EventHub("AccountValidationEventProducerHub", Connection = "EventHubConnectionAppSetting")] IAsyncCollector<string> outputEvents, 
             [ActivityTrigger] CommandProducer command, ILogger log)
         {
             ProducerResult result = new ProducerResult();
-            var eventData = new EventGridEvent(command.MessageId.ToString(), nameof(AccountValidationEventProducer), command, nameof(AccountValidationEventProducer), DateTime.UtcNow, "1.0");
-            result.Message = eventData;
-            await outputEvents.AddAsync(eventData);
+
+            var commandString = JsonConvert.SerializeObject(command);
+            byte[] messageBytes = Encoding.UTF8.GetBytes(commandString);
+            await outputEvents.AddAsync(JsonConvert.SerializeObject(messageBytes));
+
             return result;
         }
 
+        // Listen to events in AccountValidationEventProducerHub and do AccountValidation
+        // Results are then write to ReplyEventtHub.
         [FunctionName(nameof(ValidateAccount))]
-        public static async Task<ProducerResult>  ValidateAccount(
-            [EventGrid(TopicEndpointUri = "MyEventGridTopicUriSetting", TopicKeySetting = "MyEventGridTopicKeySetting")] IAsyncCollector<EventGridEvent> outputEvents,
-            [EventGridTrigger] EventGridEvent eventGridEvent, ILogger log)
+        public static async Task ValidateAccount(
+            [EventHub("ReplyEventtHub", Connection = "EventHubConnectionAppSetting")] IAsyncCollector<string> outputEvents,
+            [EventHubTrigger("AccountValidationEventProducerHub", Connection = "EventHubConnectionAppSetting")] EventData eventHubEvent, ILogger log)
         {
-            CommandProducer command = eventGridEvent.Data as CommandProducer;
-            ProducerResult result = new ProducerResult();
-            var eventData = new EventGridEvent(command.MessageId.ToString(), command.CommandName, command, command.CommandName, DateTime.UtcNow, "1.0");
-            result.Message = eventData;
-            await outputEvents.AddAsync(eventData);
-            return result;
+            CommandProducer command = JsonConvert.DeserializeObject<CommandProducer>( Encoding.UTF8.GetString(eventHubEvent.Body));
+            // using CommdProducer details do the account validation. if success OperationStatus = true
+
+            await outputEvents.AddAsync(JsonConvert.SerializeObject(command));
+
         }
 
 
         [FunctionName(nameof(EventReplyReader))]
         public static async Task EventReplyReader(
-            [EventGridTrigger()] EventGridEvent eventGridEvent, [DurableClient] IDurableOrchestrationClient client, ILogger log)
+            [EventHubTrigger("ReplyEventtHub", Connection = "EventHubConnectionAppSetting")] EventData eventHubEvent,
+            [DurableClient] IDurableOrchestrationClient client, ILogger log)
         {
-            CommandProducer command = eventGridEvent.Data as CommandProducer;
-            await client.RaiseEventAsync(command.MessageId, command.Source, true);
-        }
-
-        [FunctionName("Function1_Hello")]
-        public static string SayHello([ActivityTrigger] string name, ILogger log)
-        {
-            log.LogInformation($"Saying hello to {name}.");
-            return $"Hello {name}!";
+            CommandProducer command = JsonConvert.DeserializeObject<CommandProducer>(Encoding.UTF8.GetString(eventHubEvent.Body));
+            await client.RaiseEventAsync(command.MessageId, command.Source, command.OperationStatus);
         }
 
         [FunctionName("Reservation_Start")]

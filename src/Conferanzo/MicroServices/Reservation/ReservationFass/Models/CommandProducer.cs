@@ -9,6 +9,7 @@ namespace ReservationFass.Models
         public string MessageId { get; set; }
         public string CommandName { get; set; }
         public string Source { get; set; }
+        public bool OperationStatus { get; set; } = false;
         public Reservation ReservationMessage { get; set; }
         public CommandProducer(string messageId , string source )
         {
